@@ -8,14 +8,16 @@ import moment from "moment"
 export class RescueTimeIntake implements IIntake {
 	public processFolder(buffer: OutputBuffer, folder: string) {
 		const filePath = "rescuetime-activity-history.csv"
-		const csv = Papaparse.parse(fs.readFileSync(path.join(folder, filePath)).toString())
+		const fullPath = path.join(folder, filePath)
+		console.log(`Processing ${fullPath}...`)
+		const csv = Papaparse.parse(fs.readFileSync(fullPath).toString())
+		let count = 0
 		for (const line of csv.data) {
 			const d = moment(line[0], "YYYY-MM-DD HH:mm:ss ZZ")
 			buffer.push({
 				source: "rescuetime",
 				filePath,
 				startDate: d.toDate(),
-				endDate: d.toDate(),
 				payload: {
 					date: line[0],
 					app: line[1],
@@ -24,9 +26,12 @@ export class RescueTimeIntake implements IIntake {
 					subcategory: line[4],
 					unknown: line[5],
 				},
-				context: null,
 			})
+			++count
+			if (count % 50000 === 0) {
+				console.log(`\t→ ${count} events`)
+			}
 		}
-		console.log(csv.data[0])
+		console.log(`\t→ ${count} events`)
 	}
 }

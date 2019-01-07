@@ -52,8 +52,9 @@ export class OutputBuffer {
 	}
 
 	public flush(final: boolean) {
+		let count = 0
 		for (const [key, value] of Object.entries(this._days)) {
-			if (value) {
+			if (value && value.events.length > 0) {
 				const filePath = path.join("output", key) + ".json"
 				let array = []
 				if (value.writes > 0) {
@@ -66,8 +67,10 @@ export class OutputBuffer {
 				fs.writeFileSync(filePath, JSON.stringify(array, undefined, "\t"))
 				++value.writes
 				value.events = []
+				++count
 			}
 		}
+		console.log(`(${count} files written)`)
 		this._bufferSize = 0
 		if (final) {
 			const json: IDaySummary[] = []

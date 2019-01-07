@@ -42,14 +42,12 @@ export class GoogleIntake implements IIntake {
 							source: "google",
 							filePath,
 							startDate: d,
-							endDate: d,
 							payload: e,
-							context: null,
 						})
 					}
 				}
 			}
-			console.log(`Got ${count} events`)
+			console.log(`\t→ ${count} events`)
 		}
 	}
 }

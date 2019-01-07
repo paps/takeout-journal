@@ -2,7 +2,7 @@ export interface IEvent {
 	source: string
 	filePath: string
 	startDate: Date
-	endDate: Date
+	endDate?: Date
 	payload: unknown
-	context: unknown
+	context?: unknown
 }
